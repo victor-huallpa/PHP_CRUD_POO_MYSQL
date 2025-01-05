@@ -1,0 +1,16 @@
+RewriteEngine On
+Options All -Indexes
+
+# Personalizar el manejo del error 404
+# ErrorDocument 404 /views/404.php
+
+# Verificar que no sea un archivo o directorio existente
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirigir todas las solicitudes válidas a index.php con el parámetro 'views'
+RewriteRule ^([a-zA-Z0-9/ñÑ-]+)$ index.php?views=$1 [L,QSA]
+
+# Manejo del error 404 si no coincide ninguna regla previa
+# RewriteCond %{REQUEST_URI} !^/views/404.php$
+# RewriteRule ^.*$ /views/404.php [L]
