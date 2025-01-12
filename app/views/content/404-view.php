@@ -1,8 +1,9 @@
 
-
-    <div class="container">
-        <h1>Error 404</h1>
-        <p>La página que estás buscando no existe.</p>
-        <a href="#" class="button">Volver al inicio</a>
-    </div>
-
+<div class="main-container">
+    <section class="hero-body">
+	  	<div class="hero-body">
+		    <p class="title">Error 404</p>
+		    <p class="subtitle">Pagina no encontrada</p>
+	  	</div>
+	</section>
+</div>
