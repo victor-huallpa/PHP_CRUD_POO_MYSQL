@@ -26,8 +26,8 @@
         </main>
     <?php
         include_once 'layouts/footer.php';
-        include_once 'layouts/script.php';
     }
+    include_once 'layouts/script.php';
         
     ?>
 
