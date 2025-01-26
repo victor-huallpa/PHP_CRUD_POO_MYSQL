@@ -90,7 +90,6 @@
 		    }
 		}
 
-
 		/*----------  Controlador cerrar sesion  ----------*/
 		public function cerrarSesionControlador(){
 

@@ -1,38 +1,30 @@
 <?php
 	
 	namespace app\models;
-	use \PDO;
+	use app\models\dataBase;
 
-	if(file_exists(__DIR__."/../../config/server.php")){
-		require_once __DIR__."/../../config/server.php";
-	}
+	class mainModel extends dataBase{
 
-	class mainModel{
+		private $db;
 
-		private $server=DB_SERVER;
-		private $db=DB_NAME;
-		private $user=DB_USER;
-		private $pass=DB_PASS;
-
-
-		/*----------  Funcion conectar a BD  ----------*/
-		protected function conectar(){
-			$conexion = new PDO("mysql:host=".$this->server.";dbname=".$this->db,$this->user,$this->pass);
-			$conexion->exec("SET CHARACTER SET utf8");
-			return $conexion;
+		//constructor para instanciar conexion privada
+		public function __construct() {
+			// Obtener la instancia de la conexión a la base de datos
+			$this->db = DataBase::startConnection();
 		}
-
 
 		/*----------  Funcion ejecutar consultas  ----------*/
 		protected function ejecutarConsulta($consulta){
-			$sql=$this->conectar()->prepare($consulta);
-			$sql->execute();
-			return $sql;
+			// Obtener la conexión PDO
+			$conexion = $this->db->getConnection()->prepare($consulta);
+			$conexion->execute();
+			// Cerrar la conexión
+			// $this->db->disconnect();
+			return $conexion;
 		}
 
-
 		/*----------  Funcion limpiar cadenas  ----------*/
-		public function limpiarCadena($cadena){
+		public function limpiarCadena($cadena) {
 
 			$palabras=["<script>","</script>","<script src","<script type=","SELECT * FROM","SELECT "," SELECT ","DELETE FROM","INSERT INTO","DROP TABLE","DROP DATABASE","TRUNCATE TABLE","SHOW TABLES","SHOW DATABASES","<?php","?>","--","^","<",">","==","=",";","::"];
 
@@ -82,13 +74,15 @@
 			}
 
 			$query.=")";
-			$sql=$this->conectar()->prepare($query);
+			$sql=$this->db->getConnection()->prepare($query);
 
 			foreach ($datos as $clave){
 				$sql->bindParam($clave["campo_marcador"],$clave["campo_valor"]);
 			}
 
 			$sql->execute();
+			// Cerrar la conexión
+			// $this->db->disconnect();
 
 			return $sql;
 		}
@@ -102,12 +96,14 @@
 			$id=$this->limpiarCadena($id);
 
             if($tipo=="Unico"){
-                $sql=$this->conectar()->prepare("SELECT * FROM $tabla WHERE $campo=:ID");
+                $sql=$this->db->getConnection()->prepare("SELECT * FROM $tabla WHERE $campo=:ID");
                 $sql->bindParam(":ID",$id);
             }elseif($tipo=="Normal"){
-                $sql=$this->conectar()->prepare("SELECT $campo FROM $tabla");
+                $sql=$this->db->getConnection()->prepare("SELECT $campo FROM $tabla");
             }
             $sql->execute();
+			// Cerrar la conexión
+			// $this->db->disconnect();
 
             return $sql;
 		}
@@ -127,7 +123,7 @@
 
 			$query.=" WHERE ".$condicion["condicion_campo"]."=".$condicion["condicion_marcador"];
 
-			$sql=$this->conectar()->prepare($query);
+			$sql=$this->db->getConnection()->prepare($query);
 
 			foreach ($datos as $clave){
 				$sql->bindParam($clave["campo_marcador"],$clave["campo_valor"]);
@@ -137,16 +133,21 @@
 
 			$sql->execute();
 
+			// Cerrar la conexión
+			// $this->db->disconnect();
+
 			return $sql;
 		}
 
 
 		/*---------- Funcion eliminar registro ----------*/
         protected function eliminarRegistro($tabla,$campo,$id){
-            $sql=$this->conectar()->prepare("DELETE FROM $tabla WHERE $campo=:id");
+            $sql=$this->db->getConnection()->prepare("DELETE FROM $tabla WHERE $campo=:id");
             $sql->bindParam(":id",$id);
             $sql->execute();
             
+			// Cerrar la conexión
+			// $this->db->disconnect();
             return $sql;
         }
 
