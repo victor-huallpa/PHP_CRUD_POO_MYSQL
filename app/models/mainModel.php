@@ -204,5 +204,5 @@
 	        $tabla.='</nav>';
 	        return $tabla;
 	    }
-	    
+
 	}

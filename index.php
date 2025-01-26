@@ -15,6 +15,7 @@
         $url=["login"];
     }
 
+    #incluir cuerpo html
     include_once './app/views/inc/head.php';
     include_once './app/views/inc/body.php';
 
