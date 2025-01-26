@@ -5,7 +5,7 @@
 
 <div class="container pb-6 pt-6">
 
-	<form class="FormularioAjax" action="<?php echo APP_URL ?> app/ajax/usuarioAjax.php" method="POST" autocomplete="off" enctype="multipart/form-data" >
+	<form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/usuarioAjax.php" method="POST" autocomplete="off" enctype="multipart/form-data" >
 
 		<input type="hidden" name="modulo_usuario" value="registrar">
 
@@ -41,13 +41,13 @@
 		  	<div class="column">
 		    	<div class="control">
 					<label>Clave</label>
-				  	<input class="input" type="password" name="usuario_clave_1" pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100" required >
+				  	<input class="input" type="password" name="usuario_clave_1" pattern="[a-zA-Z0-9$@\.]{7,100}" maxlength="100" required >
 				</div>
 		  	</div>
 		  	<div class="column">
 		    	<div class="control">
 					<label>Repetir clave</label>
-				  	<input class="input" type="password" name="usuario_clave_2" pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100" required >
+				  	<input class="input" type="password" name="usuario_clave_2" pattern="[a-zA-Z0-9$@\.]{7,100}" maxlength="100" required >
 				</div>
 		  	</div>
 		</div>

@@ -2,9 +2,11 @@ body, html{
     height: 100%;
     width: 100%;
 }
+
 /* estilos login */
 main{
-    height: 95%;
+    flex: 1; /* Permite que el main ocupe el espacio restante */
+    display: flexbox;
 }
 .main-container{
     height: 100%;
@@ -23,9 +25,11 @@ main{
 } 
 /* piede de pagina */
 footer {
-    height: 5%;
+    display: flex; /* Cambia 'flexbox' a 'flex' */
+    height: 5%; 
     padding: 5px 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-color: #f1f1f1; 
+    justify-content: center; /* Centra el contenido del footer */
+    align-items: center; /* Centra verticalmente el contenido del footer */
 }
+

@@ -13,7 +13,7 @@
 		<div class="field">
 		  	<label class="label">Clave</label>
 		  	<div class="control">
-		    	<input class="input" type="password" name="login_clave" pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100" required >
+		    	<input class="input" type="password" name="login_clave" pattern="[a-zA-Z0-9$@\.]{6,100}" maxlength="100" required >
 		  	</div>
 		</div>
 
@@ -23,3 +23,9 @@
 
 	</form>
 </div>
+
+<?php
+
+	if(isset($_POST['login_usuario']) && isset($_POST['login_clave'])){
+		$insLogin->iniciarSesionControlador();
+	}

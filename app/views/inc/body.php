@@ -1,11 +1,13 @@
 <body>
 
     <?php
-    use app\controllers\viewsControllers;
+        use app\controllers\viewsController;
+        use app\controllers\loginController;
 
-    $viewsControllers = new viewsControllers();
-    #enviamos la vista que se mostrara
-    $vista = $viewsControllers->obtenerVistacontrolador($url[0]);
+        $insLogin = new loginController();
+
+        $viewsController= new viewsController();
+        $vista=$viewsController->obtenerVistasControlador($url[0]);
 
     #validar vista 
     if($vista == 'login' || $vista == '404'){
@@ -19,6 +21,12 @@
  
 
     }else{
+        # Cerrar sesion #
+        if((!isset($_SESSION['id']) || $_SESSION['id']=="") || (!isset($_SESSION['usuario']) || $_SESSION['usuario']=="")){
+            $insLogin->cerrarSesionControlador();
+            exit();
+        }
+
         include_once 'layouts/header.php';
     ?>
         <main> 
