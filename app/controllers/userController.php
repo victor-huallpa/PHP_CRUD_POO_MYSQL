@@ -276,8 +276,6 @@
 
 		}
 
-
-
 		/*----------  Controlador listar usuario  ----------*/
 		public function listarUsuarioControlador($pagina,$registros,$url,$busqueda){
 
