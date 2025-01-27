@@ -8,9 +8,9 @@
 <?php
     use app\controllers\categoryController;
 
-    $insUsuario = new categoryController();
+    $insControlador = new categoryController();
 
-    echo $insUsuario->listarCategoriaControlador($url[1],2,$url[0],"");
+    echo $insControlador->listarCategoriaControlador($url[1],2,$url[0],"");
 ?>
 
 </div>

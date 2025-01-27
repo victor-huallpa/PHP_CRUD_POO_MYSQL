@@ -3,22 +3,22 @@
 	require_once "../views/inc/session_start.php";
 	require_once "../../autoload.php";
 	
-	use app\controllers\categoryController;
+	use app\controllers\productController;
 
-	if(isset($_POST['modulo_categoria'])){
+	if(isset($_POST['modulo_producto'])){
 
-		$insUsuario = new categoryController();
+		$insProducto = new productController();
 
-		if($_POST['modulo_categoria']=="registrar"){
-			echo $insUsuario->registrarCategoriaControlador();
+		if($_POST['modulo_producto']=="registrar"){
+			echo $insProducto->registrarProductoControlador();
 		}
 
-		if($_POST['modulo_categoria']=="eliminar"){
-			echo $insUsuario->eliminarCategoriaControlador();
+		if($_POST['modulo_producto']=="eliminar"){
+			echo $insProducto->eliminarProductoControlador();
 		}
 
-		if($_POST['modulo_categoria']=="actualizar"){
-			echo $insUsuario->actualizarCategoriaControlador();
+		if($_POST['modulo_producto']=="actualizar"){
+			echo $insProducto->actualizarProductoControlador();
 		}
 		
 	}else{

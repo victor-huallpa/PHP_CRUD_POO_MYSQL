@@ -6,7 +6,7 @@
 
 	class productController extends mainModel{
 
-        /*----------  Controlador listar categoria  ----------*/
+        /*----------  Controlador listar producto  ----------*/
         public function listarProductoControlador($pagina,$registros,$url,$busqueda){
             $pagina=$this->limpiarCadena($pagina);
 			$registros=$this->limpiarCadena($registros);
@@ -120,21 +120,22 @@
 			}
 
 			return $tabla;
-
-			return $tabla;
-
         }
 
-		/*----------  Controlador registrar categoria  ----------*/
+		/*----------  Controlador registrar producto  ----------*/
         public function registrarProductoControlador(){
-            // echo 'entraste';
-            # Almacenando datos#
-		    $categoria=$this->limpiarCadena($_POST['categoria_nombre']);
-		    $ubicacion=$this->limpiarCadena($_POST['categoria_ubicacion']);
 
-            # Verificando campos obligatorios #
-		    if($categoria==""){
-		    	$alerta=[
+            /*== Almacenando datos ==*/
+            $codigo=$this->limpiarCadena($_POST['producto_codigo']);
+            $nombre=$this->limpiarCadena($_POST['producto_nombre']);
+
+            $precio=$this->limpiarCadena($_POST['producto_precio']);
+            $stock=$this->limpiarCadena($_POST['producto_stock']);
+            $categoria=$this->limpiarCadena($_POST['producto_categoria']);
+
+            /*== Verificando campos obligatorios ==*/
+            if($codigo=="" || $nombre=="" || $precio=="" || $stock=="" || $categoria==""){
+                $alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
 					"texto"=>"No has llenado los campos que son obligatorios",
@@ -142,86 +143,246 @@
 				];
 				return json_encode($alerta);
 		        exit();
-		    }
-
-            # Verificando integridad de los datos #
-		    if($this->verificarDatos("[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]{4,50}",$categoria)){
-		    	$alerta=[
-					"tipo"=>"simple",
-					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"La categoria ingresada no coincide con el formato solicitado",
-					"icono"=>"error"
-				];
-				return json_encode($alerta);
-		        exit();
-
-		    }
-
-            if($ubicacion != ""){
-                if ($this->verificarDatos("[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]{5,150}", $ubicacion)) {
-                    
-                    $alerta=[
-                        "tipo"=>"simple",
-                        "titulo"=>"Ocurrió un error inesperado",
-                        "texto"=>"La UBICACION no cumple con el formato solicitado",
-                        "icono"=>"error"
-                    ];
-                    return json_encode($alerta);
-                    exit();
-                } 
             }
 
-            # Verificando usuario #
-		    $check_categoria=$this->ejecutarConsulta("SELECT categoria_nombre FROM Categoria WHERE categoria_nombre='$categoria'");
-		    if($check_categoria->rowCount()>0){
-		    	$alerta=[
+            /*== Verificando integridad de los datos ==*/
+            if($this->verificarDatos("[a-zA-Z0-9 ]{1,70}",$codigo)){
+                $alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"La categoria ingresada ya se encuentra registrado, por favor elija otra categoria",
+					"texto"=>"El codigo ingresada no coincide con el formato solicitado",
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
 		        exit();
-		    }
-          
-            $categoria_datos_reg=[
+            }
+
+            if($this->verificarDatos("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,40}",$nombre)){
+                $alerta=[
+					"tipo"=>"simple",
+					"titulo"=>"Ocurrió un error inesperado",
+					"texto"=>"El nombre del producto no coincide con el formato solicitado",
+					"icono"=>"error"
+				];
+				return json_encode($alerta);
+		        exit();
+            }
+
+            if($this->verificarDatos("[0-9.]{1,25}",$precio)){
+                $alerta=[
+					"tipo"=>"simple",
+					"titulo"=>"Ocurrió un error inesperado",
+					"texto"=>"El PRECIO del producto no coincide con el formato solicitado",
+					"icono"=>"error"
+				];
+				return json_encode($alerta);
+		        exit();
+            }
+
+            if($this->verificarDatos("[0-9]{1,25}",$stock)){
+                $alerta=[
+					"tipo"=>"simple",
+					"titulo"=>"Ocurrió un error inesperado",
+					"texto"=>"El STOCK del producto no coincide con el formato solicitado",
+					"icono"=>"error"
+				];
+				return json_encode($alerta);
+		        exit();
+            }
+            if($this->verificarDatos("[0-9]{1,25}",$categoria)){
+                $alerta=[
+					"tipo"=>"simple",
+					"titulo"=>"Ocurrió un error inesperado",
+					"texto"=>"La categoria del producto no coincide con el formato solicitado",
+					"icono"=>"error"
+				];
+				return json_encode($alerta);
+		        exit();
+            }
+
+             /*== Verificando codigo ==*/
+            $check_codigo=$this->ejecutarConsulta("SELECT producto_codigo FROM producto WHERE producto_codigo='$codigo'");
+            if($check_codigo->rowCount()>0){
+                $alerta=[
+					"tipo"=>"simple",
+					"titulo"=>"Ocurrió un error inesperado",
+					"texto"=>"El CODIGO de BARRAS ingresado ya se encuentra registrado, por favor elija otro",
+					"icono"=>"error"
+				];
+				return json_encode($alerta);
+		        exit();
+            }
+
+            /*== Verificando nombre ==*/
+            $check_nombre=$this->ejecutarConsulta("SELECT producto_nombre FROM producto WHERE producto_nombre='$nombre'");
+            if($check_nombre->rowCount()>0){
+                $alerta=[
+					"tipo"=>"simple",
+					"titulo"=>"Ocurrió un error inesperado",
+					"texto"=>"El NOMBRE ingresado ya se encuentra registrado, por favor elija otro",
+					"icono"=>"error"
+				];
+				return json_encode($alerta);
+		        exit();
+            }
+
+            /*== Verificando categoria ==*/
+            $check_categoria=$this->ejecutarConsulta("SELECT categoria_id FROM Categoria WHERE categoria_id='$categoria'");
+            if($check_categoria->rowCount()<=0){
+                $alerta=[
+					"tipo"=>"simple",
+					"titulo"=>"Ocurrió un error inesperado",
+					"texto"=>" La categoría seleccionada no existe",
+					"icono"=>"error"
+				];
+				return json_encode($alerta);
+		        exit();
+            }
+
+            /* Directorios de imagenes */
+            $img_dir="../views/resources/photos/productos/";
+
+            /*== Comprobando si se ha seleccionado una imagen ==*/
+    		if($_FILES['producto_foto']['name']!="" && $_FILES['producto_foto']['size']>0){
+ 
+    			# Creando directorio #
+		        if(!file_exists($img_dir)){
+		            if(!mkdir($img_dir,0777)){
+		            	$alerta=[
+							"tipo"=>"simple",
+							"titulo"=>"Ocurrió un error inesperado",
+							"texto"=>"Error al crear el directorio",
+							"icono"=>"error"
+						];
+						return json_encode($alerta);
+		                exit();
+		            } 
+		        }
+
+		        # Verificando formato de imagenes #
+		        if(mime_content_type($_FILES['producto_foto']['tmp_name'])!="image/jpeg" && mime_content_type($_FILES['producto_foto']['tmp_name'])!="image/png"){
+		        	$alerta=[
+						"tipo"=>"simple",
+						"titulo"=>"Ocurrió un error inesperado",
+						"texto"=>"La imagen que ha seleccionado es de un formato no permitido",
+						"icono"=>"error"
+					];
+					return json_encode($alerta);
+		            exit();
+		        }
+
+		        # Verificando peso de imagen #
+		        if(($_FILES['producto_foto']['size']/1024)>5120){
+		        	$alerta=[
+						"tipo"=>"simple",
+						"titulo"=>"Ocurrió un error inesperado",
+						"texto"=>"La imagen que ha seleccionado supera el peso permitido",
+						"icono"=>"error"
+					];
+					return json_encode($alerta);
+		            exit();
+		        }
+
+		        # Nombre de la foto #
+		        $foto=str_ireplace(" ","_",$nombre);
+		        $foto=$foto."_".rand(0,100);
+
+		        # Extension de la imagen #
+		        switch(mime_content_type($_FILES['producto_foto']['tmp_name'])){
+		            case 'image/jpeg':
+		                $foto=$foto.".jpg";
+		            break;
+		            case 'image/png':
+		                $foto=$foto.".png";
+		            break;
+		        }
+
+		        chmod($img_dir,0777);
+
+		        # Moviendo imagen al directorio #
+		        if(!move_uploaded_file($_FILES['producto_foto']['tmp_name'],$img_dir.$foto)){
+		        	$alerta=[
+						"tipo"=>"simple",
+						"titulo"=>"Ocurrió un error inesperado",
+						"texto"=>"No podemos subir la imagen al sistema en este momento",
+						"icono"=>"error"
+					];
+					return json_encode($alerta);
+		            exit();
+		        }
+
+    		}else{
+    			$foto="";
+    		}
+
+            //Almacenar datos en un array
+            $producto_datos_reg=[
 				[
-					"campo_nombre"=>"categoria_nombre",
-					"campo_marcador"=>":Categoria",
+					"campo_nombre"=>"producto_codigo",
+					"campo_marcador"=>":Codigo",
+					"campo_valor"=>$codigo
+				],
+				[
+					"campo_nombre"=>"producto_nombre",
+					"campo_marcador"=>":Nombre",
+					"campo_valor"=>$nombre
+				],
+				[
+					"campo_nombre"=>"producto_precio",
+					"campo_marcador"=>":Precio",
+					"campo_valor"=>$precio
+				],
+				[
+					"campo_nombre"=>"producto_stock",
+					"campo_marcador"=>":Stock",
+					"campo_valor"=>$stock
+				],
+				[
+					"campo_nombre"=>"producto_foto",
+					"campo_marcador"=>":Foto",
+					"campo_valor"=>$foto
+				],
+				[
+					"campo_nombre"=>"categoria_id",
+					"campo_marcador"=>":Id",
 					"campo_valor"=>$categoria
 				],
 				[
-					"campo_nombre"=>"categoria_ubicacion",
-					"campo_marcador"=>":Ubicacion",
-					"campo_valor"=>$ubicacion
+					"campo_nombre"=>"usuario_id",
+					"campo_marcador"=>":id",
+					"campo_valor"=>$_SESSION['id']
 				]
 			];
-            
-			$registrar_categoria=$this->guardarDatos("Categoria",$categoria_datos_reg);
 
-            if($registrar_categoria->rowCount()==1){
+			$registrar_producto=$this->guardarDatos("producto",$producto_datos_reg);
+            
+
+			if($registrar_producto->rowCount()==1){
 				$alerta=[
 					"tipo"=>"limpiar",
-					"titulo"=>"Categoria registrada",
-					"texto"=>"La categoria ".$categoria." se registro con exito",
+					"titulo"=>"Usuario registrado",
+					"texto"=>"El producto ".$nombre." se registro con exito",
 					"icono"=>"success"
 				];
 			}else{
+				
+				if(is_file($img_dir.$foto)){
+		            chmod($img_dir.$foto,0777);
+		            unlink($img_dir.$foto);
+		        }
 
 				$alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
-					"texto"=>"No se pudo registrar la categoria, por favor intente nuevamente",
+					"texto"=>"No se pudo registrar el producto ".$nombre.", por favor intente nuevamente",
 					"icono"=>"error"
 				];
 			}
 
 			return json_encode($alerta);
-
-
         }
 
-        /*----------  Controlador eliminar categoria  ----------*/
+        /*----------  Controlador eliminar producto  ----------*/
         public function eliminarProductoControlador(){
 			$id=$this->limpiarCadena($_POST['categoria_id']);
 
@@ -280,7 +441,7 @@
 
         }
 
-        /*----------  Controlador actualizar categoria  ----------*/
+        /*----------  Controlador actualizar producto  ----------*/
         public function actualizarProductoControlador(){
 			$id=$this->limpiarCadena($_POST['categoria_id']);
 
@@ -393,6 +554,21 @@
 			}
 
 			return json_encode($alerta);
+        }
+
+        /*----------  Controlador listar categoria  ----------*/
+        public function listarCategoriatoControlador(){
+            
+            $datos = $this->ejecutarConsulta("SELECT categoria_nombre,categoria_id FROM Categoria");
+
+            $categorias = "";
+            if($datos->rowCount()>0){
+                $datos=$datos->fetchAll();
+                foreach($datos as $row){
+                    $categorias .= '<option value="'.$row['categoria_id'].'" >'.$row['categoria_nombre'].'</option>';
+                }
+            }
+            return $categorias;
         }
 
     }

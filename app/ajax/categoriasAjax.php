@@ -7,18 +7,18 @@
 
 	if(isset($_POST['modulo_categoria'])){
 
-		$insUsuario = new categoryController();
+		$insCategoria = new categoryController();
 
 		if($_POST['modulo_categoria']=="registrar"){
-			echo $insUsuario->registrarCategoriaControlador();
+			echo $insCategoria->registrarCategoriaControlador();
 		}
 
 		if($_POST['modulo_categoria']=="eliminar"){
-			echo $insUsuario->eliminarCategoriaControlador();
+			echo $insCategoria->eliminarCategoriaControlador();
 		}
 
 		if($_POST['modulo_categoria']=="actualizar"){
-			echo $insUsuario->actualizarCategoriaControlador();
+			echo $insCategoria->actualizarCategoriaControlador();
 		}
 		
 	}else{
