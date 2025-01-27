@@ -709,16 +709,23 @@
         }
 
         /*----------  Controlador listar categoria  ----------*/
-        public function listarCategoriatoControlador(){
+        public function listarCategoriatoControlador($forma){
             
             $datos = $this->ejecutarConsulta("SELECT categoria_nombre,categoria_id FROM Categoria");
 
             $categorias = "";
             if($datos->rowCount()>0){
                 $datos=$datos->fetchAll();
-                foreach($datos as $row){
-                    $categorias .= '<option value="'.$row['categoria_id'].'" >'.$row['categoria_nombre'].'</option>';
+                if($forma == 'opciones'){
+                    foreach($datos as $row){
+                        $categorias .= '<option value="'.$row['categoria_id'].'" >'.$row['categoria_nombre'].'</option>';
+                    }
+                }elseif($forma == 'links'){
+                    foreach($datos as $row){
+                        $categorias .= '<a href="'.APP_URL.'productCategory/'.$row['categoria_id'].'/" class="button is-link is-inverted is-fullwidth">'.$row['categoria_nombre'].'</a>';
+                    }
                 }
+
             }
             return $categorias;
         }
