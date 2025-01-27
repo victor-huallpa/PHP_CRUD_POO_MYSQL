@@ -17,7 +17,7 @@
                 <a class="navbar-item" href="<?php echo APP_URL; ?>dashboard">
                     Dashboard
                 </a>
-
+                <!-- usuarios -->
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link" href="#">
                         Usuarios
@@ -36,7 +36,30 @@
 
                     </div>
                 </div>
-            </div>
+                <!-- categorias -->
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">Categorias</a>
+
+                    <div class="navbar-dropdown">
+                        <a href="<?php echo APP_URL; ?>categoryNew/" class="navbar-item">Nuevos</a>
+                        <a href="<?php echo APP_URL; ?>categoryList/" class="navbar-item">Lista</a>
+                        <a href="<?php echo APP_URL; ?>categorySearch/" class="navbar-item">Buscar</a>
+                    </div>
+
+                </div>
+                <!-- productos -->
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">Productos</a>
+
+                    <div class="navbar-dropdown">
+                        <a href="<?php echo APP_URL; ?>productNew/" class="navbar-item">Nuevos</a>
+                        <a href="<?php echo APP_URL; ?>productList/" class="navbar-item">Lista</a>
+                        <a href="<?php echo APP_URL; ?>productCategory/" class="navbar-item">Categoria</a>
+                        <a href="<?php echo APP_URL; ?>productSearch/" class="navbar-item">Buscar</a>
+                    </div>
+
+                </div>
+        </div>
 
             <div class="navbar-end">
                 <div class="navbar-item has-dropdown is-hoverable">
