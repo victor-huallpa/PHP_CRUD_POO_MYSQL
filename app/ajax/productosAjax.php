@@ -20,6 +20,14 @@
 		if($_POST['modulo_producto']=="actualizar"){
 			echo $insProducto->actualizarProductoControlador();
 		}
+
+        if($_POST['modulo_producto']=="eliminarImagenProducto"){
+			echo $insProducto->eliminarImagenProductoControlador();
+		}
+
+        if($_POST['modulo_producto']=="actualizarImagenProducto"){
+			echo $insProducto->actualizarImagenProductoControlador();
+		}
 		
 	}else{
 		session_destroy();
