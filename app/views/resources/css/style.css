@@ -3,10 +3,14 @@ body, html{
     width: 100%;
 }
 
+body{
+    display: flex;
+    flex-direction: column;
+}
+
 /* estilos login */
 main{
     flex: 1; /* Permite que el main ocupe el espacio restante */
-    display: flexbox;
 }
 .main-container{
     height: 100%;
@@ -26,9 +30,11 @@ main{
 /* piede de pagina */
 footer {
     display: flex; /* Cambia 'flexbox' a 'flex' */
+    /* flex-direction: row; */
     height: 5%; 
+    margin-top: 25px;
     padding: 5px 24px;
-    background-color: #f1f1f1; 
+    background-color: #1f1e1ec5; 
     justify-content: center; /* Centra el contenido del footer */
     align-items: center; /* Centra verticalmente el contenido del footer */
 }

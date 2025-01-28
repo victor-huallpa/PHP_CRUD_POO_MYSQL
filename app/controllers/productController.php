@@ -7,7 +7,7 @@
 	class productController extends mainModel{
 
         /*----------  Controlador listar producto  ----------*/
-        public function listarProductoControlador($pagina,$registros,$url,$busqueda){
+        public function listarProductoControlador($pagina,$registros,$url,$busqueda, $id = ''){
             $pagina=$this->limpiarCadena($pagina);
 			$registros=$this->limpiarCadena($registros);
 
@@ -20,8 +20,8 @@
             $pagina = (isset($pagina) && $pagina>0) ? (int) $pagina : 1;
 			$inicio = ($pagina>0) ? (($pagina * $registros)-$registros) : 0;
 
-            // ojo
-            $categoria_id = (isset($_GET['category_id']))?$_GET['category_id']:0;
+            
+            $categoria_id = (!empty($id))?$id:0;
 
 
         	$campos="producto.producto_id,producto.producto_codigo,producto.producto_nombre,producto.producto_precio,producto.producto_stock,producto.producto_foto,Categoria.categoria_nombre,usuarios.usuario_nombre,usuarios.usuario_apellido";
@@ -56,6 +56,7 @@
 
 			$numeroPaginas =ceil($total/$registros);
 
+				// return $pagina;
             if($total>=1 && $pagina<=$numeroPaginas){
                 $contador=$inicio+1;
                 $pag_inicio=$inicio+1;
@@ -67,7 +68,7 @@
                                 if(is_file("./app/views/resources/photos/productos/".$rows['producto_foto'])){
                                     $tabla.='<img src="'.APP_URL.'app/views/resources/photos/productos/'.$rows['producto_foto'].'">';
                                 }else{
-                                    $tabla.='<img src="'.APP_URL.'app/views/resources/photos/productos/producto.png"> hola';
+                                    $tabla.='<img src="'.APP_URL.'app/views/resources/photos/productos/producto.png"> ';
         
                                 }
                     $tabla.='   </p>
@@ -119,86 +120,9 @@
                 }
             }
 
-            if($total>=1 && $pagina<=$numeroPaginas){
-                $tabla .= '
-                        <p class="has-text-right">Mostrando productos <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>
-                ';
-            }
-
-			return $tabla;
-
-
-            $tabla.='
-            <div class="table-container">
-                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                    <thead>
-                        <tr class="has-text-centered">
-                            <th>#</th>
-                            <th>Nombre</th>
-                            <th>Ubicación</th>
-                            <th>Productos</th>
-                            <th colspan="2">Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            ';
-            if($total>=1 && $pagina<=$numeroPaginas){
-                $contador=$inicio+1;
-                $pag_inicio=$inicio+1;
-                foreach($datos as $rows){
-                    $tabla.='
-                        <tr class="has-text-centered" >
-                            <td>'.$contador.'</td>
-                            <td>'.$rows['categoria_nombre'].'</td>
-                            <td>'.substr($rows['categoria_ubicacion'],0,25).'</td>
-                            <td>
-                                <a href="'.APP_URL.'productCategory/'.$rows['categoria_id'].'/" class="button is-link is-rounded is-small">Ver productos</a>
-                            </td>
-                            <td>
-                                <a href="'.APP_URL.'categoryUpdate/'.$rows['categoria_id'].'/" class="button is-success is-rounded is-small">Actualizar</a>
-                            </td>
-                            <td>
-                                <form class="FormularioAjax" action="'.APP_URL.'app/ajax/categoriasAjax.php" method="POST" autocomplete="off" >
-
-			                		<input type="hidden" name="modulo_categoria" value="eliminar">
-			                		<input type="hidden" name="categoria_id" value="'.$rows['categoria_id'].'">
-
-			                    	<button type="submit" class="button is-danger is-rounded is-small">Eliminar</button>
-			                    </form>
-            
-                            </td>
-                        </tr>
-                    ';
-                    $contador++;
-                }
-                $pag_final=$contador-1;
-            }else{
-                if($total>=1){
-                    $tabla.='
-                        <tr class="has-text-centered" >
-                            <td colspan="6">
-                                <a href="'.$url.'1" class="button is-link is-rounded is-small mt-4 mb-4">
-                                    Haga clic acá para recargar el listado
-                                </a>
-                            </td>
-                        </tr>
-                    ';
-                }else{
-                    $tabla.='
-                        <tr class="has-text-centered" >
-                            <td colspan="7">
-                                No hay registros en el sistema
-                            </td>
-                        </tr>
-                    ';
-                }
-            } 
-            
-            $tabla.='</tbody></table></div>';
-
 			### Paginacion ###
 			if($total>0 && $pagina<=$numeroPaginas){
-				$tabla.='<p class="has-text-right">Mostrando usuarios <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p>';
+				$tabla.='<p class="has-text-right">Mostrando productos <strong>'.$pag_inicio.'</strong> al <strong>'.$pag_final.'</strong> de un <strong>total de '.$total.'</strong></p><br/>';
 
 				$tabla.=$this->paginadorTablas($pagina,$numeroPaginas,$url,7);
 			}
@@ -709,20 +633,35 @@
         }
 
         /*----------  Controlador listar categoria  ----------*/
-        public function listarCategoriatoControlador($forma){
+        public function listarCategoriatoControlador($forma, $id=''){
+			$forma=$this->limpiarCadena($forma);
+			$id=$this->limpiarCadena($id);
             
-            $datos = $this->ejecutarConsulta("SELECT categoria_nombre,categoria_id FROM Categoria");
+			$condicion = !empty($id) ? "WHERE categoria_id='$id'" : "";
+            $datos = $this->ejecutarConsulta("SELECT categoria_nombre,categoria_id,categoria_ubicacion FROM Categoria $condicion");
 
+			if(!empty($condicion)){
+                $datos=$datos->fetch();
+				$texto = '
+					<h2 class="title has-text-centered">'.$datos['categoria_nombre'].'</h2>
+					<p class="has-text-centered pb-6" >'.$datos['categoria_ubicacion'].'</p>
+				';
+				return $texto;
+				exit();
+			}
             $categorias = "";
             if($datos->rowCount()>0){
                 $datos=$datos->fetchAll();
+
                 if($forma == 'opciones'){
                     foreach($datos as $row){
                         $categorias .= '<option value="'.$row['categoria_id'].'" >'.$row['categoria_nombre'].'</option>';
                     }
                 }elseif($forma == 'links'){
                     foreach($datos as $row){
-                        $categorias .= '<a href="'.APP_URL.'productCategory/'.$row['categoria_id'].'/" class="button is-link is-inverted is-fullwidth">'.$row['categoria_nombre'].'</a>';
+                        $categorias .= '
+
+						<a href="'.APP_URL.'productCategory/'.$row['categoria_id'].'/" class="button is-link is-inverted is-fullwidth">'.$row['categoria_nombre'].'</a>';
                     }
                 }
 
@@ -750,7 +689,7 @@
 		    }
 
             # Directorio de imagenes #
-    		$img_dir="../views/resources/photos/productos/";
+			$img_dir="../views/resources/photos/productos/";
 
     		# Comprobar si se selecciono una imagen #
     		if($_FILES['producto_foto']['name']=="" && $_FILES['producto_foto']['size']<=0){
@@ -897,7 +836,7 @@
 		    }
 
 		    # Directorio de imagenes #
-    		$img_dir="../views/resources/photos/productos/";
+			$img_dir="../views/resources/photos/productos/";
 
     		chmod($img_dir,0777);
 

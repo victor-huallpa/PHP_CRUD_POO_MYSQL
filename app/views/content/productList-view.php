@@ -11,8 +11,6 @@
     $insUsuario = new productController();
 
     echo $insUsuario->listarProductoControlador($url[1],2,$url[0],"");
-    echo $url[1];
-
 
 ?>
 

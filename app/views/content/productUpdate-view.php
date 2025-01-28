@@ -57,7 +57,7 @@
 				  	<select name="producto_categoria" >
                       <?php
                             $inscategoria = new productController();
-                            echo $inscategoria->listarCategoriatoControlador();
+                            echo $inscategoria->listarCategoriatoControlador('opciones');
 				    	?>
 				  	</select>
 				</div>
